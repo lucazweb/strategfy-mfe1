@@ -1,0 +1,48 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      # Runs a single command using the runners shell
+      - name: Install dependencies
+        run: yarn
+      - name: Test
+        run: yarn test
+        env:
+          CI: true
+      - name: Generate build
+        run: yarn build
+      # Share artifact inside workflow
+      - name: Share artifact inside workflow
+        uses: actions/upload-artifact@v1
+        with:
+          name: mfe1-build
+          path: build
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
